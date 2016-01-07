@@ -1,0 +1,187 @@
+#dropMenu, #dropMenu1 {
+    position: relative;
+    width: 950px;
+}
+
+#Years {
+    position: absolute;
+    top: 0;
+    left: 325px;
+}
+
+#Sex {
+    position: absolute;
+    top: 0;
+    left: 325px;
+}
+
+#Months {
+    position: absolute;
+    top: 0;
+    left: 475px;
+}
+
+#Days {
+    position: absolute;
+    top: 0;
+    left: 625px;
+}
+
+.dropdown-toggle {
+    width: 100px;
+}
+
+button[type="submit"] {
+    margin: 30px 170px;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+}
+
+.container {
+    vertical-align: middle;
+    margin: 20px auto;
+    padding: 0;
+    width: 80%;
+    font-weight: 100;
+    font-size: 180%;
+}
+
+.content {
+    text-align: center;
+    display: inline-block;
+}
+
+.title {
+    font-size: 96px;
+}
+
+.dropdown.name {
+    padding-right: 30px;
+    width: 200px;
+    white-space: nowrap;
+}
+
+.info-group {
+    padding-bottom: 40px;
+    font-size: 130%;
+}
+
+.form-control.input-sm.posts {
+    margin: 25px auto;
+    height: 150px;
+    width: 90%;
+}
+
+[type="submit"] {
+    width: 120px;
+    height: 40px;
+}
+
+.linkbutton {
+    margin: 10px 0 0 10px;
+    width: 120px;
+    height: 40px;
+}
+
+.dropdown-menu {
+    max-height: 130px;
+    _height: expression(this.scrollHeight>max-height?"250px":"auto");
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.tags {
+    margin-left: 45px;
+    width: 90%;
+}
+
+.select2-container, .select2-choice, .select2-result-label {
+    height: 35px;
+}
+
+.select2-arrow, .select2-chosen {
+    padding-top: 6px;
+}
+
+.col-md-1.posts {
+    width: 900px;
+    display: inline;
+    padding: 30px;
+}
+
+.list-group.tags a {
+    width: 170px;
+    text-align: center;
+    display: inline-block;
+    margin: 10px 30px;
+}
+
+.subscribed {
+    width: 170px;
+    text-align: center;
+    margin: 15px 30px;
+}
+
+.votes {
+    padding: 30px 300px;
+}
+
+.votes a {
+    display: inline-block;
+    text-align: center;
+    margin: 20px 5px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 10px;
+    border-collapse: expression('separate', cellSpacing = '2px');
+}
+
+table td, table tr {
+    padding: 0 100px 10px 0; /* cellpadding */
+    width:80px;
+}
+
+.subscribeNow{
+    font-weight: 200;
+    font-size: x-large;
+    display: inline-block;
+    text-align: center;
+    margin-left: 350px;
+
+}
+
+.comments{
+    height: 110px;
+    text-align: left;
+    display: -webkit-box;
+    margin: 0 auto;
+    -webkit-line-clamp: 2;
+    text-rendering: optimizelegibility;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.undertext{
+    font-size: 90%;
+    color: #888a85;
+}
+
+#posts,#comments{
+    display: none;
+}
+
+.menu-bar{
+    min-height: 200px;
+    max-height: 300px;
+    _height: expression(this.scrollHeight>max-height?"250px":"auto");
+    overflow: auto;
+    overflow-x: hidden;
+}
