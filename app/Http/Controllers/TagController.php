@@ -6,7 +6,7 @@ use Auth;
 use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Tag_Request;
 
 class TagController extends Controller
 {
@@ -105,5 +105,25 @@ class TagController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function request_tag(Request $request){
+        $this->validate($request, ['requested_tag' => 'required']);
+        Tag_Request::create([
+            'tag' => $request->get('requested_tag'),
+            'accepted' => false
+        ]);
+        return redirect('/');
+    }
+
+    public function accept_requested_tag(Request $request){
+        $this->validate($request, ['requested_tag' => 'required']);
+        $tag = Tag_Request::where(['tag' => $request->get('requested_tag')]);
+        $tag->update(['accepted' => true]);
+        Tag::create([
+            'name' => $tag->tag,
+            'private' => false
+        ]);
+        return redirect('/');
     }
 }

@@ -20,6 +20,8 @@ Route::controllers([
 Route::get('requests', ['as' => 'requests','uses' => 'TagController@requests']);
 Route::get('tags/subscribe/{tags}',['as' => 'subscribe','uses' => 'TagController@subscribe']);
 Route::get('tags/unsubscribe/{tags}',['as' => 'unsubscribe','uses' => 'TagController@unsubscribe']);
+Route::post('tags/request', 'TagController@request_tag');
+Route::post('/tags/requests/accept', 'TagController@accept_requested_tag');
 Route::get("posts/upvote/{posts}", ['as' => 'postUpVote', 'uses' => 'PostController@upVote']);
 Route::get("posts/downvote/{posts}", ['as' => 'postDownVote', 'uses' => 'PostController@downVote']);
 Route::get("comments/upvote/{comments}", ['as' => 'commentsUpVote', 'uses' => 'CommentController@upVote']);
