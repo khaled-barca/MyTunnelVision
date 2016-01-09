@@ -20,7 +20,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['create','timeline','show']]);
-        $this->middleware('admin', ['only' => ['makeAdmin']]);
+        $this->middleware('admin', ['only' => ['makeAdmin', 'inviteAdmin', 'invitation_data']]);
     }
 
     /**
@@ -118,6 +118,37 @@ class UserController extends Controller
     {
         $user->update([
             'type' => 1
+        ]);
+        return redirect('/');
+    }
+
+    public function invitation_data(){
+        $invitedUsers = Admin_Invitation::all();
+        $ret = collect([]);
+        foreach ($invitedUsers as $user){
+            $registered_user = User::where(['email' => $user->email])->first();
+            if(!is_null($registered_user)) {
+                $user->update(['registered' => true]);
+                $ret->push($user);
+            }
+        }
+        return $ret;
+    }
+
+    public function inviteAdmin(Request $request){
+        $this->validate($request,[
+            'email' => 'email'
+        ]);
+        $data = array(
+            'name' => "Admin inviation",
+        );
+        Mail::send('invitation', $data, function ($message) use ($request){
+            $message->from('mansoursaid001@gmail.com', 'Admin');
+            $message->to($request->get('email'))->subject('Admin Invitation');
+        });
+        Admin_Invitation::create([
+            'email' => $request->get('email'),
+            'registered' => false
         ]);
         return redirect('/');
     }

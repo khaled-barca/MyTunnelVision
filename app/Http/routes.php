@@ -27,6 +27,8 @@ Route::get("comments/downvote/{comments}", ['as' => 'commentsDownVote', 'uses' =
 Route::get('/timeline', 'UserController@timeLine');
 Route::get('/{posts}/comments', 'PostController@getComments');
 Route::post('/admin', 'UserController@makeAdmin');
+Route::post('/admin/invite', 'UserController@inviteAdmin');
+Route::get('/admin/invitations', 'UserController@invitation_data');
 Route::get('/{users}/history', 'UserController@history');
 
 Route::resource('users', 'UserController');
