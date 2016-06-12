@@ -185,3 +185,16 @@ table td, table tr {
     overflow: auto;
     overflow-x: hidden;
 }
+
+#signup,#admin,#tags,#private,#public,#name,#whoweare,#feedback {
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+#logo{
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    height: auto;
+}

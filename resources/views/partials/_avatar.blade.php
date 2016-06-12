@@ -11,9 +11,13 @@
                 </div>
         </div>
         <div style="margin-left: 40px">
+            @if($post->isAnonymous && (!Auth::user() || Auth::user() && $post->user()->first()->id != Auth::user()->id))
+                Anonymous
+            @else
             <a href="{{route("users.show",[$post->user()->get()->first()])}}">
                 {{$post->user()->get()->first()->fullName()}}
             </a>
+            @endif
             <p>
                 posted {{$diff}}
             </p>

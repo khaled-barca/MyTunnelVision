@@ -15,9 +15,9 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ($request->user()->type() == 0)
+        if (!$request->user()->isAdmin())
         {
-            return redirect('/');
+            return response('Unauthorized.', 401);
         }
 
         return $next($request);

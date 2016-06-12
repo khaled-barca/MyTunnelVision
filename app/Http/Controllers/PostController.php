@@ -14,12 +14,13 @@ use Mockery\CountValidator\Exception;
 use Response;
 use Validator;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
     public function __construct(Post $post)
     {
-        $this->middleware('auth', ['except' => ['show','index']]);
+        $this->middleware('auth', ['except' => ['show', 'index']]);
     }
 
     public function create()
@@ -28,9 +29,10 @@ class PostController extends Controller
         return view('posts.create', compact('tags'));
     }
 
-    public function index(){
-        $posts = Post::where(['private' => 0])->simplePaginate(10);
-        return view("posts.index",compact("posts"));
+    public function index()
+    {
+        $posts = Post::publics()->simplePaginate(10);
+        return view("posts.index", compact("posts"));
     }
 
     public function store(PostRequest $request)
@@ -78,7 +80,7 @@ class PostController extends Controller
         $comments = $post->comments()->getResults()->groupBy('parent_id');
         $rootComments = $comments->get(null)->groupBy('id');
         $filterOutKeys = array('');
-        $filteredArr = array_diff_key($comments->toArray(), array_flip( $filterOutKeys ));
+        $filteredArr = array_diff_key($comments->toArray(), array_flip($filterOutKeys));
         return [
             'root_comments' => $rootComments,
             'child_comments' => $filteredArr];
@@ -95,7 +97,7 @@ class PostController extends Controller
             'user_id' => Auth::id(),
             'up' => 0])->first();
         if (!$user_up_vote) {
-            if($user_down_vote)
+            if ($user_down_vote)
                 $user_down_vote->delete();
             return $this->vote($post, 1);
         } else {
@@ -114,12 +116,31 @@ class PostController extends Controller
             'user_id' => Auth::id(),
             'up' => 0])->first();
         if (!$user_down_vote) {
-            if($user_up_vote)
+            if ($user_up_vote)
                 $user_up_vote->delete();
             return $this->vote($post, 0);
         } else {
             return redirect()->route('posts.show', compact('post'))->with("warning", "You've already downvoted this post");
         }
+    }
+
+    public function feedback(Request $request)
+    {
+        $this->validate($request, [
+            'feedback' => 'required|max:255',
+            'subject' => 'required|max:255'
+        ]);
+
+        $data = array(
+            'feedback' => $request["feedback"],
+            'name' => Auth::user()->fullName()
+        );
+        Mail::send('emails.feedback', $data, function ($message) use ($request){
+            $message->from(env('MAIL_USERNAME'), 'MyTunnelVision');
+            $message->to(env('MAIL_FEEDBACK'))->subject($request['subject']);
+        });
+
+        return redirect()->to('/')->with('message', "Your feedback has been sent");
     }
 
     private function vote(Post $post, $vote)
@@ -138,4 +159,5 @@ class PostController extends Controller
         ]);
         return view('posts.show', compact('post'));
     }
+
 }

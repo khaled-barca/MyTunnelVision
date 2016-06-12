@@ -7,12 +7,14 @@ use App\Post;
 use App\Post_Tag;
 use App\Tag_User;
 use App\User;
+use App\Admin_Invitation;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -20,7 +22,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['create','timeline','show']]);
-        $this->middleware('admin', ['only' => ['makeAdmin', 'inviteAdmin', 'invitation_data']]);
+        $this->middleware('admin', ['only' => ['inviteAdmin', 'invitation_data']]);
     }
 
     /**
@@ -44,7 +46,20 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $posts = $user->posts()->get();
+        if(Auth::user()){
+            if(Auth::user()->id === $user->id){
+                $posts = $user->posts()->get();
+            }
+            elseif(Auth::user()->isAdmin()){
+                $posts = $user->posts()->known()->get();
+            }
+            else{
+                $posts = $user->posts()->known()->publics()->get();
+            }
+        }
+        else{
+            $posts = $user->posts()->known()->publics()->get();
+        }
         $comments = $user->comments()->get();
         return view('users.show',compact('user','posts','comments'));
     }
@@ -79,7 +94,7 @@ class UserController extends Controller
         ]);
         $request['date_of_birth'] = Carbon::parse($request->get('date_of_birth'));
         Auth::user()->update($request->all());
-        return redirect(url('/users/show'))->with('message', "Successfully updated Your info.");
+        return redirect(action('UserController@show',[Auth::user()]))->with('message', "Successfully updated Your info.");
     }
 
     public function timeLine()
@@ -89,13 +104,17 @@ class UserController extends Controller
             $posts = collect([]);
             foreach ($tags as $tag) {
                 foreach ($tag->post()->get() as $post) {
-                    if(!Auth::user()->type){
-                        if(!$post->private)
+                    if($post->user_id == Auth::id()){
+                        $posts->push($post);
+                    }
+                    elseif(!Auth::user()->isAdmin()){
+                        if(!$post->isPrivate)
                             $posts->push($post);
-                        else{
+                       /* else{
                             if($post->user_id == Auth::id())
                                 $posts->push($post);
                         }
+                       */
                     }else{
                         $posts->push($post);
                     }
@@ -114,12 +133,15 @@ class UserController extends Controller
         }
     }
 
-    public function makeAdmin(User $user)
+    public function acceptInvitation($token)
     {
-        $user->update([
-            'type' => 1
-        ]);
-        return redirect('/');
+        $ai = Admin_Invitation::where('token',$token)->first();
+        $user = $ai->user()->first();
+        $user->type = 1;
+        $ai->registered = 1;
+        $user->save();
+        $ai->save();
+        return redirect('/')->with("message","Congratulations, You 're now an admin !!");
     }
 
     public function invitation_data(){
@@ -136,21 +158,30 @@ class UserController extends Controller
     }
 
     public function inviteAdmin(Request $request){
-        $this->validate($request,[
-            'email' => 'email'
-        ]);
-        $data = array(
-            'name' => "Admin inviation",
-        );
-        Mail::send('invitation', $data, function ($message) use ($request){
-            $message->from('mansoursaid001@gmail.com', 'Admin');
-            $message->to($request->get('email'))->subject('Admin Invitation');
-        });
-        Admin_Invitation::create([
-            'email' => $request->get('email'),
-            'registered' => false
-        ]);
-        return redirect('/');
+        $receiver = User::find($request['id']);
+        $ai = Admin_Invitation::where('user_id',$receiver->id)->first();
+        if($ai){
+            return redirect()->back()->with("warning","User is already on the candidate list");
+        }
+        else{
+            $request['email'] = $receiver['email'];
+            $token = bin2hex(openssl_random_pseudo_bytes(16));
+            $data = array(
+                'sender' => Auth::user()->fullName(),
+                'receiver' => $receiver->fullName(),
+                'link' => redirect(action('UserController@acceptInvitation',[$token]))->getTargetUrl()
+            );
+            Mail::send('emails.invitation', $data, function ($message) use ($request){
+                $message->from(env('MAIL_USERNAME'), 'MyTunnelVision');
+                $message->to($request->get('email'))->subject('MyTunnelVision Admin Invitation');
+            });
+            Admin_Invitation::create([
+                'token' => $token,
+                'user_id' => $receiver->id,
+                'registered' => false,
+            ]);
+            return redirect()->back()->with("message","Invitation request successfully sent");
+        }
     }
 
     public function history($id){

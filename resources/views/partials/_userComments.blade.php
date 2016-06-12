@@ -8,8 +8,10 @@
         <?php $diff = str_replace("before", "ago", $diff); ?>
         <div class="undertext">
             made by
-            @if(Auth::user() && $user->id === Auth::user()->id)
+            @if(Auth::user() && $post->user()->first()->id === Auth::user()->id)
                 You
+            @elseif($post->isAnonymous)
+                Anonymous
             @else
                 <a href="{{route("users.show",[$user])}}">
                     {{$user->first_name}}

@@ -7,13 +7,13 @@
                     <div class="panel-heading">Request a new Tag</div>
                     <div class="panel-body">
                         {!! Form::open(['class' => 'form-horizontal', 'method' => 'POST', 'action' =>
-                        ['TagController@store']])!!}
+                        ['TagController@request_tag']])!!}
                         <div class="form-group">
                             <h4>
                                 <label for="inputsm" class="col-md-2 control-label" style="padding-right: 45px;">Tag Name</label>
                                 <br/>
                                 <br/>
-                                <input name="title" class="form-control input-sm" style="width: 30%; margin-left: 45px"/>
+                                <input name="requested_tag" class="form-control input-sm" style="width: 30%; margin-left: 45px"/>
                             </h4>
                         </div>
 
@@ -30,5 +30,5 @@
 @endsection
 
 @section("title")
-    Create new post
+    Request new Tag
 @endsection

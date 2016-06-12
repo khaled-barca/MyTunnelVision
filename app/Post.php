@@ -9,7 +9,8 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
-        'private'
+        'isPrivate',
+        'isAnonymous'
     ];
 
     protected $table = 'posts';
@@ -39,5 +40,13 @@ class Post extends Model
     }
     public function downVotes(){
         return Post_Vote::where(['up' => 0, 'post_id' => $this->id])->count();
+    }
+
+    public function scopePublics($query){
+        return $query->where('isPrivate',0);
+    }
+
+    public function scopeKnown($query){
+        return $query->where('isAnonymous',0);
     }
 }

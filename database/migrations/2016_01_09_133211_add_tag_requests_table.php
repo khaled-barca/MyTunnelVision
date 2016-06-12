@@ -15,7 +15,7 @@ class AddTagRequestsTable extends Migration
         Schema::create('tag_requests', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tag')->unique();
-            $table->boolean('accepted');
+            $table->boolean('accepted')->nullable();
             $table->timestamps();
         });
     }

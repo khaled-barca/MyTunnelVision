@@ -63,7 +63,7 @@ class User extends Model implements AuthenticatableContract,AuthorizableContract
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function adminInvitation(){
+    public function invitation(){
         return $this->hasOne('App\Admin_Invitation');
     }
 }

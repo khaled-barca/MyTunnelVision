@@ -89,23 +89,26 @@
                             </div>
                         </div>
                         @if( Auth::user() && $user->id === Auth::user()->id)
-                        <div class="col-md-6 col-md-offset-4">
-                            <a href="{{url('/users/' . Auth::user()->id . '/edit')}}" class="btn btn-primary linkbutton"
-                               role="button">
-                                Edit
-                            </a>
-                        </div>
-                            @endif
-
-                        @if(Auth::user() && Auth::user()->isAdmin() && !$user->isAdmin())
                             <div class="col-md-6 col-md-offset-4">
-                                <a href="" class="btn btn-primary"
+                                <a href="{{url('/users/' . Auth::user()->id . '/edit')}}"
+                                   class="btn btn-primary linkbutton"
                                    role="button">
-                                    Promote to Admin
+                                    Edit
                                 </a>
                             </div>
-                            @endif
+                        @endif
 
+                        @if(Auth::user() && Auth::user()->isAdmin() && !$user->isAdmin())
+                            <div class="col-md-6 col-md-offset-2">
+                                {!! Form::open(['class' => 'form-horizontal', 'method' => 'POST', 'action' =>
+                                ['UserController@inviteAdmin']])!!}
+                                <input type="hidden" name="id" value="{{$user->id}}">
+                                <button class="btn btn-primary" type="submit" style="width:150px;">
+                                    Promote to Admin
+                                </button>
+                                {!! Form::close() !!}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

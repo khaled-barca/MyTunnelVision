@@ -17,6 +17,14 @@ Route::controllers([
     'auth' => 'Auth\AuthController',
     'password' => 'Auth\PasswordController'
 ]);
+Route::get('about', function(){
+   return view("about");
+});
+Route::get('feedback',function(){
+   return view('feedback');
+});
+
+Route::post('feedback', ['as' => 'giveFeedback', 'uses' => 'PostController@feedback']);
 Route::get('requests', ['as' => 'requests','uses' => 'TagController@requests']);
 Route::get('tags/subscribe/{tags}',['as' => 'subscribe','uses' => 'TagController@subscribe']);
 Route::get('tags/unsubscribe/{tags}',['as' => 'unsubscribe','uses' => 'TagController@unsubscribe']);
@@ -28,9 +36,9 @@ Route::get("comments/upvote/{comments}", ['as' => 'commentsUpVote', 'uses' => 'C
 Route::get("comments/downvote/{comments}", ['as' => 'commentsDownVote', 'uses' => 'CommentController@downVote']);
 Route::get('/timeline', 'UserController@timeLine');
 Route::get('/{posts}/comments', 'PostController@getComments');
-Route::post('/admin', 'UserController@makeAdmin');
-Route::post('/admin/invite', 'UserController@inviteAdmin');
-Route::get('/admin/invitations', 'UserController@invitation_data');
+Route::post('/admins/invite', 'UserController@inviteAdmin');
+Route::get('/admins/invitations', 'UserController@invitation_data');
+Route::get('/admins/{token}', 'UserController@acceptInvitation');
 Route::get('/{users}/history', 'UserController@history');
 
 Route::resource('users', 'UserController');

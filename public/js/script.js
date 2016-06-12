@@ -13,7 +13,7 @@ $("document").ready(function(){
         }
         var date = year +"-"+month+"-"+ day;
         $("input[name='date_of_birth']").val(date);
-        if($("#SexButton").text() == "Female"){
+        if($.trim($("#SexButton").text()) == "Female"){
             $("input[name='sex']").val("1");
         }
         else{
@@ -27,8 +27,8 @@ $("document").ready(function(){
     $(".btn.btn-primary.newPost").on('click',function(){
         var anonymity = $('input:radio[name=anonymity]:checked').val();
         var privacy = $('input:radio[name=privacy]:checked').val();
-        $("input[name='private']").val(privacy);
-        $("input[name='anonymous']").val(anonymity);
+        $("input[name='isPrivate']").val(privacy);
+        $("input[name='isAnonymous']").val(anonymity);
     });
 
     $("#tag_list").select2({

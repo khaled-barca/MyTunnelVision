@@ -15,6 +15,14 @@ class TagController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['show']]);
+        $this->middleware('admin', ['only' => ['requests','store']]);
+    }
+
+
     public function index()
     {
         $tags = Tag::all();
@@ -24,7 +32,8 @@ class TagController extends Controller
     }
 
     public function requests(){
-        return view("tags.requests");
+        $tags  = Tag_Request::whereNull("accepted")->get();
+        return view("tags.requests",compact("tags"));
 
     }
 
@@ -58,7 +67,20 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, ['requested_tag' => 'required']);
+        $tag = Tag_Request::find($request['requested_tag']);
+        if($request["submit"] == "Accept"){
+            $tag->update(['accepted' => true]);
+            Tag::create([
+                'name' => $tag->tag
+            ]);
+        }
+        else{
+            $tag->update(['accepted' => false]);
+        }
+
+        return redirect()->back();
+
     }
 
     /**
@@ -69,7 +91,13 @@ class TagController extends Controller
      */
     public function show(Tag $tag)
     {
-        $posts = $tag->post()->simplePaginate(10);
+        if(Auth::user() && Auth::user()->isAdmin()){
+            $posts = $tag->post()->simplePaginate(10);
+        }
+        else{
+            $posts = $tag->post()->publics()->simplePaginate(10);
+        }
+
         return view('tags.show',compact('posts','tag'));
     }
 
@@ -111,19 +139,8 @@ class TagController extends Controller
         $this->validate($request, ['requested_tag' => 'required']);
         Tag_Request::create([
             'tag' => $request->get('requested_tag'),
-            'accepted' => false
+            'accepted' => null
         ]);
-        return redirect('/');
-    }
-
-    public function accept_requested_tag(Request $request){
-        $this->validate($request, ['requested_tag' => 'required']);
-        $tag = Tag_Request::where(['tag' => $request->get('requested_tag')]);
-        $tag->update(['accepted' => true]);
-        Tag::create([
-            'name' => $tag->tag,
-            'private' => false
-        ]);
-        return redirect('/');
+        return redirect(action("TagController@index"))->with("message","Your request was successfully sent");
     }
 }

@@ -1,7 +1,7 @@
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 <input type="hidden" name="_method" value="PATCH">
 <input type="hidden" name="date_of_birth" value="">
-<input type="hidden" name="sex" value="">
+<input type="hidden" name="sex" value="{{$user->sex}}">
 
 <div class="form-group">
     <label class="col-md-4 control-label">First Name</label>

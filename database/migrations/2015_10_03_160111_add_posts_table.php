@@ -18,7 +18,8 @@ class AddPostsTable extends Migration
             $table->text('body');
             $table->integer('vote_count')->default(0);
             $table->integer('user_id')->unsigned();
-            $table->boolean('private');
+            $table->boolean('isPrivate');
+            $table->boolean('isAnonymous');
             $table->timestamps();
 
             $table->foreign('user_id')

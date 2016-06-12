@@ -27,6 +27,8 @@ class PostRequest extends Request
             'body' => 'required|max:300',
             'title' => 'required|max:30',
             'tags' => 'required',
+            'isPrivate' => 'required',
+            'isAnonymous' => 'required'
         ];
     }
 }

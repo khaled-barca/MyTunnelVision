@@ -34,12 +34,19 @@
                 <span class="icon-bar"></span>
             </button>
         </div>
+        <div id = "logo">
+            <a href="{{url('/')}}">
+            <img src="{{asset("/images/logo.jpg")}}"/>
+            </a>
+        </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-top: 10px;">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url('/') }}">MyTunnelVision</a></li>
+                <li style="padding-left: 50px;"><a href="{{ url('about') }}">About</a></li>
+                <li style="padding-left: 50px;"><a href="{{ url('feedback') }}">Feedback</a></li>
                 @if (Auth::user())
-                    <li style="padding-left: 100px;"><a href="{{ route('tags.index') }}">Tags</a></li>
+                    <li style="padding-left: 50px;"><a href="{{ route('tags.index') }}">Tags</a></li>
                 @endif
 
             </ul>

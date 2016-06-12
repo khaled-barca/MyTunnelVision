@@ -61,7 +61,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user =  User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'sex' => $data['sex'],
@@ -69,5 +69,10 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+        if(User::all()->count() == 1){
+            $user->type = 1;
+            $user->save();
+        }
+        return $user;
     }
 }

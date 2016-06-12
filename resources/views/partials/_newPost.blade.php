@@ -57,5 +57,5 @@
     </button>
 </div>
 
-<input type="hidden" name="private" value="">
-<input type="hidden" name="anonymous" value="">
+<input type="hidden" name="isPrivate" value="">
+<input type="hidden" name="isAnonymous" value="">
